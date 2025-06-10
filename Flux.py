@@ -85,7 +85,7 @@ translations = {
         "get_cookies": "Где взять куки?",
         "download_label": "Что скачать?",
         "params_label": "Параметры",
-        "youtube_cookie_error": "Ошибка загрузки с YouTube: куки файл устарел или не выбран. Обновите или выберите его."
+        "youtube_cookie_error": "Ошибка скачивания: неизвестная ошибка или файл cookies устарел либо не выбран."
     },
     "en": {
         "window_title": "Flux",
@@ -115,7 +115,7 @@ translations = {
         "get_cookies": "Where to get cookies?",
         "download_label": "What to download?",
         "params_label": "Parameters",
-        "youtube_cookie_error": "YouTube download error: cookies file is outdated or missing. Please update or select it."
+        "youtube_cookie_error": "Download error: Unknown error, or your cookies file is either outdated or not selected."
     }
 }
 
@@ -543,7 +543,10 @@ class FluxWindow(QMainWindow):
                 current_text = self.status_text.toPlainText()
                 if current_text.startswith(translations[previous_language][self.current_status_key].split(":")[0]):
                     message = current_text[len(translations[previous_language][self.current_status_key].split(":")[0]) + 2:].strip()
-                    self.current_status = translations[self.language][self.current_status_key].format(**{self.current_status_key.replace("warning", "message"): message})
+                    if self.current_status_key == "download_error":
+                        self.current_status = translations[self.language][self.current_status_key].format(error=message)
+                    else:
+                        self.current_status = translations[self.language][self.current_status_key].format(message=message)
                 else:
                     self.current_status = current_text
             elif self.current_status_key == "unavailable_videos":
